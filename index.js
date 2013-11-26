@@ -4,3 +4,4 @@ var sik = module.exports = function(options) {
 
 sik.app = require('./lib/app.js');
 sik.express = require('express');
+sik.modella = require('modella');
