@@ -1,5 +1,6 @@
 var sik = module.exports = function() {
-  sik.app();
+  return sik.app();
 };
 
 sik.app = require('./lib/app.js');
+sik.express = require('express');
