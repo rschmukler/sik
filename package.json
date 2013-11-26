@@ -22,5 +22,12 @@
   "dependencies": {
     "express": "~3.4.4",
     "connect-redis": "~1.4.6"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0",
+    "blanket": "~1.1.5",
+    "expect.js": "~0.2.0",
+    "superagent": "~0.15.7",
+    "mocha-lcov-reporter": "0.0.1"
   }
 }
