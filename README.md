@@ -59,6 +59,19 @@ app.get('/api/hello-world', function(req, res, next) {
 
 Packaged components for use on the front-end. Currently, these are packaged with
 [component](http://github.com/component/component), but this may change soon.
+
+Example: `lib/components/some-component/`
+
+```
+  some-component/
+    - component.json
+    - some-component.js
+    - some-component.styl
+    - template.jade
+
+```
+
+
 The components define the following:
 
 - `component.json` - *required* - Manifest file for the component.
