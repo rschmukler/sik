@@ -82,3 +82,117 @@ The components define the following:
 - `template.jade` - *optional* - Jade file for any templates/partials that may
   be necessary to render the component. These are compiled and served under
   `public/component-name/template.html`.
+
+##### lib/pages/
+
+Pages are very similar to components. They are collections of javascript,
+templates, and styling. The difference is that they also have associated angular routes. 
+They are high-level application destinations.
+
+Example: `lib/pages/example-page`
+
+```
+lib/
+  pages/
+    example-page/
+      - component.json
+      - example-page.js
+      - example-page.styl
+      - template.jade
+```
+
+The structuring is very similar to a component. The difference is that
+`example-page.js` defines a route/end point.
+
+Example: `example-page/example-page.js`
+
+```js
+var ExamplePage = angular.module('myApp.example-page', []);
+
+ExamplePage.config(['$routeProvider', function($routeProvider) {
+  $routeProvider.when('/hello-world', {
+    controller: 'ExamplePageController',
+    templateUrl: '/assets-example-page/template.html'
+  });
+}]);
+
+ExamplePage.controller('ExamplePageController', ['$scope', function($scope) {
+  // Do something cool
+}]);
+```
+
+##### lib/models/
+
+Models represent application objects. They may be stored in the database, but
+may also just be JS objects that help keep application logic (specifically for
+the API). By default, sik includes [modella](http://github.com/modella/modella)
+as its preferred model provider. You can access it through `sik.modella`.
+
+Example: `lib/models/todo-model/index.js`
+
+```js
+var Todo = module.exports = require('sik').modella('Todo');
+
+Todo.attr('description', { required: true })
+    .attr('done', { type: 'boolean' })
+    .attr('userId');
+```
+
+
+###### Presenters
+
+Often it is necessary to mutate an object before sending it out through the API.
+Examples include sanitizing it, or looking up relations. To do this, sik
+encourages the use of presenter plugins for your models.
+
+Example (continued from above): `lib/models/todo-model/index.js`
+
+```js
+Todo.use(require('./presenter.js'));
+```
+
+Example: `lib/models/todo-model/presenter.js`
+
+```js
+module.exports = function(Todo) {
+  Todo.on('initialize', generatePresenter);
+
+  function generatePresenter(todo) {
+    todo.presenter = {
+      smallApiSummary: function() {
+        return { 
+          description: todo.description(),
+          done: todo.done()
+        };
+      },
+      largeApiSummary: function(forUser) {
+        var result = this.smallApiSummary();
+        result.isOwner = todo.userId().toString() == forUser.primary().toString();
+        return result;
+      }
+    };
+  }
+}
+```
+
+Example: `lib/api/todo-api.js`
+
+```js
+var app = module.exports = require('sik')(),
+    Todo = require('todo-model');
+
+app.get('/api/v1/todos', function(req, res, next) {
+  Todo.all({}, function(err, todos) {
+    if(err) return res.send(500, {msg: err.message});
+    res.send(200, todos.map(function(t) { return t.present().smallApiSummary(); }));
+  })
+});
+
+app.get('/api/v1/todos/:id', function(req, res, next) {
+  var user = req.user;
+  Todo.get(req.params.id, function(err, todo) {
+    if(err) return res.send(500, {msg: err.message});
+    res.send(200, todo.present().largeApiSummary(user));
+  })
+});
+```
