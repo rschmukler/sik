@@ -17,8 +17,10 @@ with [sik-tools](http://github.com/rschmukler/sik-tools).
      - models/
  - config/
  - test/
+     - test-helper.js
      - apis/
      - components/
+     - factories/
      - pages/
      - models/
 ```
