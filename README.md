@@ -10,12 +10,12 @@ with [sik-tools](http://github.com/rschmukler/sik-tools).
 ```
  - appName.js
  - component.json
+ - config/
  - lib/
      - apis/
      - components/
      - pages/
      - models/
- - config/
  - test/
      - test-helper.js
      - apis/
@@ -41,6 +41,17 @@ var app = module.exports = sik({
   root: __dirname
 });
 ```
+
+##### config/
+
+Config is used for storing credentials and configurations used by your
+application. Some examples might be:
+
+- Amazon EC2 Credentials (`config/aws.js`);
+- Facebook API Credentials (`config/facebook.js`)
+- Database credentials (`config/db.js`).
+
+
 
 ##### lib/apis/
 
