@@ -15,6 +15,7 @@ with [sik-tools](http://github.com/rschmukler/sik-tools).
      - apis/
      - components/
      - pages/
+     - express-pages/
      - models/
  - test/
      - test-helper.js
@@ -95,6 +96,32 @@ The components define the following:
 - `template.jade` - *optional* - Jade file for any templates/partials that may
   be necessary to render the component. These are compiled and served under
   `public/component-name/template.html`.
+
+##### lib/express-pages/
+
+Express pages are stand-alone express applications that get loaded as modules
+into the main express application. They are like APIs, however can have
+associated Jade, css, etc. They define their express application in `routes.js`.
+
+
+Example: `lib/pages/example-page/site-wide`
+
+```
+lib/
+  express-pages/
+    site-wide/
+      routes.js
+      layout.jade
+      layout.styl
+```
+
+`lib/pages/example-page/site-wide/routes.js
+```
+app.get('/*', function(req, res, next) {
+  debug("Load angular template");
+  res.render('layout.jade');
+}
+```
 
 ##### lib/pages/
 
